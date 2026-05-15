@@ -13,7 +13,8 @@ CAMINHO_DADOS = "dados_processados.json"
 st.title("📈 Triagem e Análise de Processos Jurídicos")
 
 processos = st.text_area(
-    "Cole os detalhes dos processos jurídicos em formato JSON:"
+    "Cole os detalhes dos processos jurídicos em formato JSON:",
+    height=250
 )
 
 col1, col2 = st.columns(2)

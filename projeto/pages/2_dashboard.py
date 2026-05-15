@@ -52,9 +52,22 @@ try:
         Dados Processados:
         {df.to_string(index=False)}
     """
-    
+    st.divider()
     st.subheader("🤖 Insights Estratégicos com IA")
-    if st.button("Gerar Relatório Executivo"):
+    st.info(
+        """
+        Gere um relatório executivo automático com análise estratégica
+        dos processos jurídicos processados pela IA.
+        """
+    )
+    col1, col2, col3 = st.columns([1,2,1])
+    with col2:
+        gerar_relatorio = st.button(
+            "📄 Gerar Relatório Executivo",
+            use_container_width=True
+        )
+
+    if gerar_relatorio:
         with st.spinner("Gerando análise estratégica..."):
             resp = client.chat.completions.create(
                 model="gpt-4o-mini",
@@ -74,8 +87,11 @@ try:
                 temperature=0.3
             )
             
-            st.success("📄 Relatório Executivo Gerado")
-            st.markdown(resp.choices[0].message.content)
+            relatorio = resp.choices[0].message.content
+            st.success("✅ Relatório Executivo Gerado")
+            
+            with st.expander("📑 Visualizar Relatório", expanded=True):
+                st.markdown(relatorio)
 
 except FileNotFoundError:
     st.warning("Nenhum dado processado encontrado.")

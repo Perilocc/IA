@@ -16,11 +16,11 @@ except FileNotFoundError:
     st.warning("Nenhum dado processado encontrado.")
     st.stop()
 
-pergunta = st.text_area(
+pergunta = st.chat_input(
     "Faça uma pergunta sobre os processos analisados na Triagem:"
 )
 
-if st.button("Consultar IA"):
+if pergunta:
     if not pergunta.strip():
         st.warning("Digite uma pergunta.")
         st.stop()
@@ -28,7 +28,7 @@ if st.button("Consultar IA"):
     prompt = f"""
     Base de dados processada:
     
-    {df.to_string(index=False)}
+    {df.to_json(orient="records", force_ascii=False)}
 
     Pergunta do usuário:
     {pergunta}
