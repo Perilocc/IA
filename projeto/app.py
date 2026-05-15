@@ -48,6 +48,14 @@ Na página **📊 Dashboard**, visualize:
 
 ---
 
+### 3. Página de Consulta
+Na página **💬 Consulta**, faça perguntas específicas sobre os processos analisados. 
+A IA responderá com base nas informações disponíveis.
+- Exemplo de perguntas:
+    - "Quantos processos de Direito do Trabalho foram classificados como alta prioridade?"
+    - "Qual é a distribuição de complexidade dos casos de Direito Civil?"
+    - "Quais processos apresentam alto risco financeiro?"
+
 ## 🛠️ Tecnologias Utilizadas
 
 - Python
