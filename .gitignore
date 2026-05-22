@@ -1,2 +1,5 @@
 venv/
+ai_farmacia_index/
+.env*
 __pycache__/
+farmacia.db
