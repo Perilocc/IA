@@ -179,6 +179,22 @@ def badge_status_funcionario(status: str):
 def linha_sep():
     st.markdown("---")
 
+def render_chunk_sources(sources):
+    if not sources:
+        return
+
+    with st.expander("📚 Trechos recuperados", expanded=False):
+        for index, source in enumerate(sources, 1):
+            source_id = source.get("id", "-")
+            content = source.get("content", "")
+            preview = content[:700] + ("..." if len(content) > 700 else "")
+
+            st.markdown(f"**#{index} — {source_id}**")
+            st.caption(f"{len(content)} caracteres recuperados")
+            st.code(preview, language="text")
+            if index < len(sources):
+                st.divider()
+
 # ------------------------------
 # SIDEBAR
 # ------------------------------
@@ -506,7 +522,7 @@ elif pagina == "🤖 Assistente IA":
                     st.session_state.chat_history.append({
                         "role": "ai",
                         "content": data["answer"],
-                        "sources": data["sources"]
+                        "sources": data.get("sources", [])
                     })
                 else:
                     st.session_state.chat_history.append({
@@ -529,7 +545,8 @@ elif pagina == "🤖 Assistente IA":
         else:
             st.markdown(f"**🤖 Assistente**: {msg['content']}")
             if msg.get("sources"):
-                st.caption(f"📎 Referências utilizadas (IDs do banco): `{', '.join(msg['sources'])}`")
+                st.caption(f"📎 Referências utilizadas (IDs do banco): {', '.join(source.get('id', '-') for source in msg['sources'])}")
+                render_chunk_sources(msg["sources"])
             st.markdown("---")
     
     # Botão para limpar a conversa
