@@ -1,0 +1,36 @@
+=======================================================================
+RELATÓRIO TÉCNICO INTERNO: IDENTIFICAÇÃO DE LOTES E ANÁLISE DE RISCO
+=======================================================================
+
+[PRODUTO 1]
+MEDICAMENTO: Amoxicilina + Clavulanato de Potássio 500mg + 125mg (Comprimidos)
+CLASSE DE RISCO: Classe I (Alto risco, ameaça imediata à saúde ou risco de óbito)
+MOTIVO DA RESTRICAÇÃO: Constatada contaminação química por resíduos do solvente industrial diclorometano acima do limite tolerável na linha de montagem 04.
+
+LOTES CONTAMINADOS (AMOXICILINA):
+- Lote: AMX-2601 | Fabricação: 15/01/2026 | Validade: 15/01/2028 | Distribuição: Hospitais públicos da Região Nordeste.
+- Lote: AMX-2602 | Fabricação: 18/01/2026 | Validade: 18/01/2028 | Distribuição: Redes de Farmácias de grande porte (Nacional).
+- Lote: AMX-2603 | Fabricação: 20/01/2026 | Validade: 20/01/2028 | Distribuição: Distribuidores específicos do estado de São Paulo e Rio de Janeiro.
+
+---
+
+[PRODUTO 2]
+MEDICAMENTO: Soro Fisiológico (Cloreto de Sódio 0,9%) - Bolsa de Infusão 500ml
+CLASSE DE RISCO: Classe II (Risco moderado, pode causar problemas de saúde temporários ou reversíveis)
+MOTIVO DA RESTRICAÇÃO: Identificadas micropartículas plásticas suspensas decorrentes de uma falha no lote de matéria-prima das bolsas plásticas do fornecedor externo.
+
+LOTES CONTAMINADOS (SORO):
+- Lote: SF-9940 | Fabricação: 02/02/2026 | Validade: 02/02/2028 | Distribuição: Hospitais, Clínicas Médicas e Prontos-Socorros privados da Região Sudeste e Sul.
+- Lote: SF-9941 | Fabricação: 05/02/2026 | Validade: 05/02/2028 | Distribuição: Distribuidores hospitalares nacionais.
+
+=======================================================================
+DIRETRIZES GERAIS DE RECALL E PROTOCOLOS REGULATÓRIOS
+=======================================================================
+PROTOCOLO DA ANVISA APLICADO: Resolução da Diretoria Colegiada - RDC nº 655/2022.
+De acordo com o protocolo regulatório da ANVISA, a empresa iniciou o recolhimento compulsório de emergência. O prazo máximo para a segregação total dos estoques nos distribuidores e pontos de venda é de até 48 horas após a emissão do alerta oficial.
+
+PROCEDIMENTO DE RECALL LOGÍSTICO:
+1. Bloqueio imediato do inventário nos sistemas operacionais de todos os parceiros comerciais.
+2. Segregação física das unidades em área de quarentena devidamente identificada ("PRODUTO REPROVADO - NÃO UTILIZAR").
+3. Recolhimento físico (Logística Reversa) operado pela transportadora oficial do laboratório, com emissão de nota fiscal de devolução para fins de rastreabilidade legal.
+4. Destruição do material em usina de incineração licenciada ambientalmente, gerando o Laudo de Inutilização necessário para apresentação à ANVISA.
