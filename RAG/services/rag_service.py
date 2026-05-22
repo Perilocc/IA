@@ -16,6 +16,19 @@ from RAG.services.ollama_service import (
 
 ranker = CrossEncoder("cross-encoder/ms-marco-MiniLM-L-6-v2")
 
+def build_sources(docs, metas):
+    sources = []
+
+    for i, (doc, meta) in enumerate(zip(docs, metas)):
+        sources.append({
+            "index": i + 1,
+            "module": meta.get("module"),
+            "record_id": meta.get("record_id"),
+            "text": doc[:500]
+        })
+
+    return sources
+
 def expand_query(query: str):
     return [
         query,
@@ -182,6 +195,8 @@ async def process_chat(req):
         """
 
         response = await generate(prompt)
+        
+        sources = build_sources(docs, metas)
 
         cited_ids = list(set(
             re.findall(r"ID[:\s]*([A-Za-z0-9_]+)", response)
@@ -195,9 +210,12 @@ async def process_chat(req):
 
         return {
             "answer": response,
-            "sources": valid_ids if valid_ids else [
-                f"{m.get('module')}_{m.get('record_id')}"
-                for m in metas[:3]
+            "sources": [
+                {
+                    "id": f"{s['module']}_{s['record_id']}",
+                    "content": s["text"]
+                }
+                for s in sources
             ],
             "status": "success",
             "processing_time": time.time() - start_time
