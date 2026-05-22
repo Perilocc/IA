@@ -157,6 +157,17 @@ def post(endpoint: str, data: dict):
     except Exception as exc:
         return False, {"detail": str(exc)}
 
+def post_files(endpoint: str, files):
+    try:
+        r = requests.post(f"{AI_SERVICE_URL}{endpoint}", files=files, timeout=120)
+        try:
+            payload = r.json()
+        except ValueError:
+            payload = {"detail": "Erro de processamento do serviço de IA"}
+        return r.ok, payload
+    except Exception as exc:
+        return False, {"detail": str(exc)}
+
 # ------------------------------
 # HELPERS UI
 # ------------------------------
@@ -183,6 +194,7 @@ pagina = st.sidebar.radio(
         "👥 Funcionários",
         "🏭 Fornecedores",
         "💰 Vendas",
+        "📄 Documentos",
         "🤖 Assistente IA",
     ],
     label_visibility="collapsed",
@@ -408,6 +420,39 @@ elif pagina == "💰 Vendas":
     else:
         st.info("Nenhuma venda registrada até o momento.")
 
+elif pagina == "📄 Documentos":
+    st.title("📄 Documentos")
+    st.caption("Envie PDFs, DOCX ou TXT para enriquecer a base vetorial do assistente IA.")
+
+    with st.form("form_documentos"):
+        arquivos = st.file_uploader(
+            "Selecionar documentos",
+            type=["pdf", "docx", "txt"],
+            accept_multiple_files=True,
+            help="Formatos aceitos: PDF, DOCX e TXT",
+        )
+        submitted_docs = st.form_submit_button("📤 Enviar documentos", use_container_width=True)
+
+    if submitted_docs:
+        if not arquivos:
+            st.warning("Selecione pelo menos um arquivo.")
+        else:
+            payload_files = []
+            for arquivo in arquivos:
+                mime_type = arquivo.type or "application/octet-stream"
+                payload_files.append(("files", (arquivo.name, arquivo.getvalue(), mime_type)))
+
+            with st.spinner("Indexando documentos na memória vetorial..."):
+                ok, resp = post_files("/ai/documents/upload", payload_files)
+
+            if ok:
+                st.success(
+                    f"{resp.get('message', 'Documentos indexados.')} ({resp.get('indexed', 0)} chunks em {resp.get('files', 0)} arquivo(s))"
+                )
+            else:
+                st.error(resp.get("detail", "Falha ao processar documentos"))
+
+    st.info("Depois do envio, os arquivos passam a ser consultáveis no Assistente IA junto com os dados da farmácia.")
 # ------------------------------
 # ASSISTENTE IA (RAG)
 # ------------------------------

@@ -4,6 +4,7 @@ import time
 from fastapi import HTTPException
 
 from RAG.core.chroma import collection
+from RAG.core.logging_config import logger
 
 from RAG.services.ollama_service import (
     get_embeddings,
@@ -117,7 +118,11 @@ async def process_chat(req):
             time.time()-start_time
         }
 
-    except Exception:
+    except Exception as exc:
+        logger.exception(
+            "Erro interno ao processar chat: %s",
+            exc,
+        )
         return {
             "answer":
             "Erro interno",

@@ -12,6 +12,10 @@ from RAG.routes.health_routes import (
     router as health_router
 )
 
+from RAG.routes.documents_routes import (
+    router as documents_router
+)
+
 app = FastAPI(
     title="Farmácia AI Service (RAG)",
     version="1.0"
@@ -33,4 +37,10 @@ app.include_router(
     health_router,
     prefix="/ai",
     tags=["Health"]
+)
+
+app.include_router(
+    documents_router,
+    prefix="/ai",
+    tags=["Documentos"]
 )

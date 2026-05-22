@@ -13,7 +13,7 @@ AI_CONFIG = {
 
     "LLM_MODEL": os.getenv(
         "LLM_MODEL",
-        "gemma3:270m"
+        "gemma3"
     ),
 
     "EMBED_MODEL": os.getenv(
