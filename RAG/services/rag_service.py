@@ -1,7 +1,6 @@
 from sentence_transformers import CrossEncoder
 import re
 import time
-import asyncio
 
 from fastapi import HTTPException
 
@@ -15,19 +14,6 @@ from RAG.services.ollama_service import (
 )
 
 ranker = CrossEncoder("cross-encoder/ms-marco-MiniLM-L-6-v2")
-
-def build_sources(docs, metas):
-    sources = []
-
-    for i, (doc, meta) in enumerate(zip(docs, metas)):
-        sources.append({
-            "index": i + 1,
-            "module": meta.get("module"),
-            "record_id": meta.get("record_id"),
-            "text": doc[:500]
-        })
-
-    return sources
 
 def expand_query(query: str):
     return [
@@ -60,17 +46,30 @@ async def validate_context(query, context):
     prompt = f"""
         Você é um avaliador de contexto.
 
-        Pergunta: {query}
+        Pergunta:
+        {query}
 
         Contexto:
         {context}
 
-        Esse contexto contém informação suficiente para responder?
+        Esse contexto é suficiente para responder corretamente?
         Responda apenas SIM ou NÃO.
     """
 
     result = await generate(prompt)
-    return "SIM" in result.upper()
+    return result.strip().upper().startswith("SIM")
+
+
+def build_sources(docs, metas):
+    return [
+        {
+            "id": f"{m.get('module')}_{m.get('record_id')}",
+            "module": m.get("module"),
+            "record_id": m.get("record_id"),
+            "content": d[:500]
+        }
+        for d, m in zip(docs, metas)
+    ]
 
 async def process_chat(req):
     start_time = time.time()
@@ -127,7 +126,6 @@ async def process_chat(req):
             unique[key] = (d, m)
 
         docs, metas = zip(*unique.values())
-
         docs = list(docs)
         metas = list(metas)
 
@@ -153,20 +151,21 @@ async def process_chat(req):
         is_valid = await validate_context(req.query, context)
 
         if not is_valid:
-            # fallback inteligente (RAG retry simples)
             logger.warning("Contexto rejeitado pelo validador LLM")
 
-            # estratégia simples: aumenta recall
             query_embedding = await get_embeddings([req.query])
 
             results = collection.query(
                 query_embeddings=query_embedding,
-                n_results=10,  # aumenta recall
+                n_results=10,
                 include=["documents", "metadatas"]
             )
 
             docs = results.get("documents", [[]])[0]
             metas = results.get("metadatas", [[]])[0]
+
+            docs = docs[:req.top_k]
+            metas = metas[:req.top_k]
 
             context = "\n".join(
                 [
@@ -195,8 +194,6 @@ async def process_chat(req):
         """
 
         response = await generate(prompt)
-        
-        sources = build_sources(docs, metas)
 
         cited_ids = list(set(
             re.findall(r"ID[:\s]*([A-Za-z0-9_]+)", response)
@@ -208,15 +205,18 @@ async def process_chat(req):
             if m.get("record_id") in cited_ids
         ]
 
+        if not valid_ids:
+            valid_ids = [
+                f"{m.get('module')}_{m.get('record_id')}"
+                for m in metas[:3]
+            ]
+
+        sources = build_sources(docs, metas)
+
         return {
             "answer": response,
-            "sources": [
-                {
-                    "id": f"{s['module']}_{s['record_id']}",
-                    "content": s["text"]
-                }
-                for s in sources
-            ],
+            "sources": sources,
+            "valid_ids": valid_ids,
             "status": "success",
             "processing_time": time.time() - start_time
         }
